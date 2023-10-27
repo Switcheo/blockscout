@@ -32,7 +32,7 @@ config :block_scout_web,
   display_token_icons: ConfigHelper.parse_bool_env_var("DISPLAY_TOKEN_ICONS"),
   hide_block_miner: ConfigHelper.parse_bool_env_var("HIDE_BLOCK_MINER"),
   show_tenderly_link: ConfigHelper.parse_bool_env_var("SHOW_TENDERLY_LINK"),
-  insights_api_url: System.get_env("CARBON_INSIGHTS_API_URL")
+  insights_api_url: System.get_env("CARBON_INSIGHTS_API_URL", "https://rpc-archive.carbon.network/")
 
 config :block_scout_web, :recaptcha,
   v2_client_key: System.get_env("RE_CAPTCHA_CLIENT_KEY"),
