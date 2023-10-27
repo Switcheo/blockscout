@@ -96,7 +96,6 @@ defmodule EthereumJSONRPC.Block do
   def extract_cosmos_transactions(height, hash, latest_tx_index) when is_integer(height) do
     cosmos_rpc_url = Application.fetch_env!(:ethereum_jsonrpc, :cosmos_rpc_url)
     tx_index = latest_tx_index - 1
-    IO.puts(cosmos_rpc_url)
     case HTTPoison.get("#{cosmos_rpc_url}/block_results?height=#{height}") do
       {:ok, %HTTPoison.Response{body: body, status_code: 200}} ->
         case Jason.decode(body) do
@@ -115,6 +114,7 @@ defmodule EthereumJSONRPC.Block do
                   tx_index=tx_index + 1
                   convert_cosmos_to_evm_tx(tx_event.address, tx_event.gas, height, hash, tx_index)
                 end)
+              _ -> []
             end
 
           {:error, _} -> {:error, "Failed to decode JSON"}
@@ -123,7 +123,7 @@ defmodule EthereumJSONRPC.Block do
       {:ok, %HTTPoison.Response{body: body, status_code: _}} ->
         {:error, body}
 
-      {:error, %{reason: reason}} -> {:error, reason}
+      {:error, reason} -> {:error, reason}
     end
   end
 

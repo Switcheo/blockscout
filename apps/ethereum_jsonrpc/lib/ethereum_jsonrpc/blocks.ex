@@ -59,7 +59,12 @@ defmodule EthereumJSONRPC.Blocks do
   end
 
   def to_elixir_with_cosmos_transactions(blocks) when is_list(blocks) do
-    Enum.map(blocks, &Block.elixir_to_blocks_with_cosmos_tx/1)
+    case Application.fetch_env!(:ethereum_jsonrpc, :cosmos_rpc_url) do
+      nil ->
+        blocks  # Do nothing if :cosmos_rpc_url is not set
+      _ ->
+        Enum.map(blocks, &Block.elixir_to_blocks_with_cosmos_tx/1)
+    end
   end
 
   @doc """
