@@ -88,7 +88,7 @@
                   title: gettext("Copy Txn Hash") %>
             </dd>
           </dl>
-          <!-- Carbon Transaction Hash -->
+          <!-- Cosmos Transaction Hash -->
           <dl class="row">
             <dt class="col-sm-3 col-lg-2 text-muted">
               <%= render BlockScoutWeb.CommonComponentsView, "_i_tooltip_2.html",
@@ -96,19 +96,19 @@
               <%= gettext "Cosmos Hash" %>
             </dt>
             <dd class="col-sm-9 col-lg-10" style="word-break: break-all;">
-              <% carbon_hash = BlockScoutWeb.TransactionView.cosmos_hash(@transaction) %>
-              <%= if cosmos_hash_present(carbon_hash) do %>
-                <a href="<%= BlockScoutWeb.TransactionView.demexscan_link(carbon_hash) %>" rel="noreferrer" target="_blank" title='<%= gettext("Carbonscan Transaction Link") %>'>
-                  <span class="transaction-details-address" data-test="transaction_detail_hash"><%= carbon_hash %> </span>
+              <% cosmos_hash = BlockScoutWeb.TransactionView.cosmos_hash(@transaction) %>
+              <%= if cosmos_hash_present(cosmos_hash) do %>
+                <a href="<%= BlockScoutWeb.TransactionView.demexscan_link(cosmos_hash) %>" rel="noreferrer" target="_blank" title='<%= gettext("Cosmos Transaction Link") %>'>
+                  <span class="transaction-details-address" data-test="transaction_detail_hash"><%= cosmos_hash %> </span>
                 </a>
               <%= else %>
-                  <span class="transaction-details-address" data-test="transaction_detail_hash"><%= carbon_hash %> </span>
+                  <span class="transaction-details-address" data-test="transaction_detail_hash"><%= cosmos_hash %> </span>
               <%= end %>
               <%= render BlockScoutWeb.CommonComponentsView, "_btn_copy.html",
                   additional_classes: ["btn-copy-icon-small", "btn-copy-icon-custom", "btn-copy-icon-no-borders"],
-                  clipboard_text: carbon_hash,
-                  aria_label: gettext("Copy Demex Core Transaction Hash"),
-                  title: gettext("Copy Demex Core Txn Hash") %>
+                  clipboard_text: cosmos_hash,
+                  aria_label: gettext("Copy Cosmos Transaction Hash"),
+                  title: gettext("Copy Cosmos Txn Hash") %>
             </dd>
           </dl>
           <!-- Verify in other explorers -->
