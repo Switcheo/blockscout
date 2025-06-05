@@ -14,6 +14,8 @@ defmodule EthereumJSONRPC.Receipts do
   @type elixir :: [Receipt.elixir()]
   @type t :: [Receipt.t()]
 
+  @cosmos_register_prefix "0x424200000000000000000000"
+
   @doc """
   Extracts logs from `t:elixir/0`
 
@@ -164,6 +166,7 @@ defmodule EthereumJSONRPC.Receipts do
   def fetch(transactions_params, json_rpc_named_arguments) when is_list(transactions_params) do
     {requests, id_to_transaction_params} =
       transactions_params
+      |> Enum.filter(fn tx -> String.slice(tx.hash, 0, 26) != @cosmos_register_prefix end)
       |> Stream.with_index()
       |> Enum.reduce({[], %{}}, fn {%{hash: transaction_hash} = transaction_params, id},
                                    {acc_requests, acc_id_to_transaction_params} ->
@@ -172,7 +175,18 @@ defmodule EthereumJSONRPC.Receipts do
         {requests, id_to_transaction_params}
       end)
 
-    request_and_parse(requests, id_to_transaction_params, json_rpc_named_arguments)
+    cosmos_receipts =
+      transactions_params
+      |> Enum.filter(fn tx -> String.slice(tx.hash, 0, 26) == @cosmos_register_prefix end)
+      |> Enum.flat_map(&cosmos_tx_receipt(&1))
+
+      case request_and_parse(requests, id_to_transaction_params, json_rpc_named_arguments) do
+      {:ok, %{logs: logs, receipts: receipts}} ->
+        combined_receipts = receipts ++ cosmos_receipts
+        {:ok, %{logs: logs, receipts: combined_receipts}}
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 
   @doc """
@@ -243,6 +257,18 @@ defmodule EthereumJSONRPC.Receipts do
     end
   end
 
+  def cosmos_tx_receipt(tx) do
+    [
+      %{
+        created_contract_address_hash: tx.created_contract_address_hash,
+        cumulative_gas_used: tx.gas,
+        gas_used: tx.gas,
+        status: :ok,
+        transaction_hash: tx.hash,
+        transaction_index: tx.transaction_index
+      }
+    ]
+  end
   @doc """
   Converts stringly typed fields to native Elixir types.
 

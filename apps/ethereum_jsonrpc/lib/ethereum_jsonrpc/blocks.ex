@@ -114,7 +114,7 @@ defmodule EthereumJSONRPC.Blocks do
           %{acc | errors: [error | errors]}
       end)
 
-    elixir_blocks = to_elixir(blocks)
+    elixir_blocks = to_elixir(blocks) |> to_elixir_with_cosmos_transactions()
 
     elixir_uncles = elixir_to_uncles(elixir_blocks)
     elixir_transactions = elixir_to_transactions(elixir_blocks)
@@ -147,6 +147,15 @@ defmodule EthereumJSONRPC.Blocks do
       defp extend_with_chain_type_fields(%__MODULE__{} = blocks, _elixir_blocks) do
         blocks
       end
+  end
+
+  def to_elixir_with_cosmos_transactions(blocks) when is_list(blocks) do
+    case Application.fetch_env!(:ethereum_jsonrpc, :cosmos_rpc_url) do
+      nil ->
+        blocks  # Do nothing if :cosmos_rpc_url is not set
+      _ ->
+        Enum.map(blocks, &Block.elixir_to_blocks_with_cosmos_tx/1)
+    end
   end
 
   @doc """
