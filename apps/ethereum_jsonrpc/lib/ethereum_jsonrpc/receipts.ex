@@ -180,7 +180,7 @@ defmodule EthereumJSONRPC.Receipts do
       |> Enum.filter(fn tx -> String.slice(tx.hash, 0, 26) == @cosmos_register_prefix end)
       |> Enum.flat_map(&cosmos_tx_receipt(&1))
 
-      case request_and_parse(requests, id_to_transaction_params, json_rpc_named_arguments) do
+    case request_and_parse(requests, id_to_transaction_params, json_rpc_named_arguments) do
       {:ok, %{logs: logs, receipts: receipts}} ->
         combined_receipts = receipts ++ cosmos_receipts
         {:ok, %{logs: logs, receipts: combined_receipts}}

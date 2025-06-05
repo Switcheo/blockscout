@@ -98,7 +98,7 @@
             <dd class="col-sm-9 col-lg-10" style="word-break: break-all;">
               <% carbon_hash = BlockScoutWeb.TransactionView.cosmos_hash(@transaction) %>
               <%= if cosmos_hash_present(carbon_hash) do %>
-                <a href="<%= BlockScoutWeb.TransactionView.carbonscan_link(carbon_hash) %>" rel="noreferrer" target="_blank" title='<%= gettext("Carbonscan Transaction Link") %>'>
+                <a href="<%= BlockScoutWeb.TransactionView.demexscan_link(carbon_hash) %>" rel="noreferrer" target="_blank" title='<%= gettext("Carbonscan Transaction Link") %>'>
                   <span class="transaction-details-address" data-test="transaction_detail_hash"><%= carbon_hash %> </span>
                 </a>
               <%= else %>
@@ -107,8 +107,8 @@
               <%= render BlockScoutWeb.CommonComponentsView, "_btn_copy.html",
                   additional_classes: ["btn-copy-icon-small", "btn-copy-icon-custom", "btn-copy-icon-no-borders"],
                   clipboard_text: carbon_hash,
-                  aria_label: gettext("Copy Carbon Transaction Hash"),
-                  title: gettext("Copy Carbon Txn Hash") %>
+                  aria_label: gettext("Copy Demex Core Transaction Hash"),
+                  title: gettext("Copy Demex Core Txn Hash") %>
             </dd>
           </dl>
           <!-- Verify in other explorers -->
